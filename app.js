@@ -1,15 +1,13 @@
 const express = require('express');
 const app = express();
 
-const { infoCursos } = require('./cursos.js');
+const { infoCursos } = require('./datos/cursos.js');
 
 //router
-const routerProgramacion = express.Router();
+const routerProgramacion = require('./routers/programacion.js');
 app.use('/cursos/programacion', routerProgramacion);
 
-console.log(routerProgramacion);
-
-const routerMatematicas = express.Router();
+const routerMatematicas = require('./routers/matematicas.js');
 app.use('/cursos/matematicas', routerMatematicas);
 
 //routing
@@ -20,47 +18,6 @@ app.get('/', (req, res) => {
 app.get('/cursos', (req, res) => {
     res.send(JSON.stringify(infoCursos));
 });
-
-routerProgramacion.get('/', (req, res) => {
-    res.send(JSON.stringify(infoCursos.programacion));
-});
-
-routerProgramacion.get('/:lenguaje', (req, res) => {
-    const lenguaje = req.params.lenguaje;
-  
-    const resultados = infoCursos.programacion.filter(cursos => cursos.lenguaje === lenguaje);
-    if (resultados.length === 0) {
-        return res.status(404).send(`no se encontraron cursos con este lenguaje ${lenguaje}`);
-    }
-    res.send(JSON.stringify(resultados));
-})
-
-routerProgramacion.get('/:lenguaje/:nivel', (req, res) => {
-    const lenguaje = req.params.lenguaje;
-    const nivel = req.params.nivel;
-
-    const resultados = infoCursos.programacion.filter(cursos => cursos.lenguaje === lenguaje && cursos.nivel === nivel) ;
-    if (resultados.length === 0) {
-        return res.status(404).send(`no se encontraron cursos con este lenguaje ${lenguaje} de nivel ${nivel}`);
-    }
-    res.send(JSON.stringify(resultados));
-})
-
-routerMatematicas.get('/', (req,res) => {
-    res.send(JSON.stringify(infoCursos.matematicas));
-})
-
-routerMatematicas.get('/:tema', (req, res) => {
-    const tema = req.params.tema;
-  
-    const resultados = infoCursos.matematicas.filter(cursos => cursos.tema === tema);
-    if (resultados.length === 0) {
-        return res.status(404).send(`no se encontraron cursos con este tema ${tema}`);
-    }
-    res.send(JSON.stringify(resultados));
-})
-
-
 
 const PUERTO = process.env.PORT || 3000;
 
